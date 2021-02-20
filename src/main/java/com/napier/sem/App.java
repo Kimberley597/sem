@@ -1,17 +1,22 @@
 package com.napier.sem;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class App {
     public static void main(String[] args) {
         // Create new Application
         App a = new App();
+
         // Connect to database
         a.connect();
-        // Get Employee
-        Employee emp = a.getEmployee(255530);
-        // Display results
-        a.displayEmployee(emp);
+
+        // Extract employee salary information
+        ArrayList<Employee> employees = a.getAllSalaries();
+
+        // Test the size of the returned data - should be 240124
+        System.out.println(employees.size());
+
         // Disconnect from database
         a.disconnect();
     }
@@ -89,7 +94,7 @@ public class App {
                     "JOIN salaries ON salaries.emp_no = e1.emp_no JOIN employees e2 ON e2.emp_no IN " +
                     "(SELECT dm2.emp_no FROM dept_manager dm2 WHERE dm2.dept_no = dp1.dept_no AND dm2.to_date = '9999-01-01') " +
                     "WHERE dept_emp.emp_no = '" + ID + "' AND salaries.to_date = '9999-1-1' AND dm1.to_date = '9999-1-1' " +
-                    "AND titles.to_date = '9999-1-1' AND dept_emp.to_date = '9999-1-1';" ;
+                    "AND titles.to_date = '9999-1-1' AND dept_emp.to_date = '9999-1-1';";
             // Execute SQL statement
             ResultSet reset = stmt.executeQuery(strSelect);
             // Return new employee if valid.
@@ -124,6 +129,41 @@ public class App {
                             + "Salary:" + emp.salary + "\n"
                             + emp.dept_name + "\n"
                             + "Manager: " + emp.manager + "\n");
+        }
+    }
+
+    /**
+     * Gets all the current employees and salaries.
+     *
+     * @return A list of all employees and salaries, or null if there is an error.
+     */
+    public ArrayList<Employee> getAllSalaries() {
+        try {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary "
+                            + "FROM employees, salaries "
+                            + "WHERE employees.emp_no = salaries.emp_no AND salaries.to_date = '9999-01-01' "
+                            + "ORDER BY employees.emp_no ASC";
+            // Execute SQL statement
+            ResultSet reset = stmt.executeQuery(strSelect);
+            // Extract employee information
+            ArrayList<Employee> employees = new ArrayList<>();
+            while (reset.next()) {
+                Employee emp = new Employee();
+                emp.emp_no = reset.getInt("employees.emp_no");
+                emp.first_name = reset.getString("employees.first_name");
+                emp.last_name = reset.getString("employees.last_name");
+                emp.salary = reset.getInt("salaries.salary");
+                employees.add(emp);
+            }
+            return employees;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get salary details");
+            return null;
         }
     }
 }
