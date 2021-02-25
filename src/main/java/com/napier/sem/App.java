@@ -4,7 +4,8 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         // Create new Application
         App a = new App();
 
@@ -134,11 +135,12 @@ public class App {
 
     /**
      * Gets all the current employees and salaries.
-     *
      * @return A list of all employees and salaries, or null if there is an error.
      */
-    public ArrayList<Employee> getAllSalaries() {
-        try {
+    public ArrayList<Employee> getAllSalaries()
+    {
+        try
+        {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Create string for SQL statement
@@ -151,7 +153,8 @@ public class App {
             ResultSet reset = stmt.executeQuery(strSelect);
             // Extract employee information
             ArrayList<Employee> employees = new ArrayList<>();
-            while (reset.next()) {
+            while (reset.next())
+            {
                 Employee emp = new Employee();
                 emp.emp_no = reset.getInt("employees.emp_no");
                 emp.first_name = reset.getString("employees.first_name");
@@ -160,10 +163,31 @@ public class App {
                 employees.add(emp);
             }
             return employees;
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             System.out.println(e.getMessage());
             System.out.println("Failed to get salary details");
             return null;
+        }
+    }
+
+
+    /**
+     * Prints a list of employees.
+     * @param employees The list of employees to print.
+     */
+    public void printSalaries(ArrayList<Employee> employees)
+    {
+        // Print header
+        System.out.println(String.format("%-10s %-15s %-20s %-8s %-15s" , "Emp No", "First Name", "Last Name", "Salary", "Title"));
+        // Loop over all employees in the list
+        for (Employee emp : employees)
+        {
+            String emp_string =
+                    String.format("%-10s %-15s %-20s %-8s %-15s",
+                            emp.emp_no, emp.first_name, emp.last_name, emp.salary, emp.title);
+            System.out.println(emp_string);
         }
     }
 }
