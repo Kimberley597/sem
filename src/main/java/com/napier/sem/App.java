@@ -25,7 +25,7 @@ public class App {
 //        ArrayList<Employee> employees = a.getAllSalaries();
 //        a.printSalaries(employees);
 
-        ArrayList<Employee> employees = a.getAllSalaries("Manager");
+        ArrayList<Employee> employees = a.getAllSalaries("Engineer");
         a.printSalaries(employees);
 
         // Disconnect from database
