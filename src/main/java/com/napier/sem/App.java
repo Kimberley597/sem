@@ -23,11 +23,11 @@ public class App {
             a.connect(args[0]);
         }
 
-        Department dept = a.getDepartment("Sales");
-        ArrayList<Employee> employees = a.getSalariesByDepartment(dept);
+        //Department dept = a.getDepartment("Sales");
+        //ArrayList<Employee> employees = a.getSalariesByDepartment(dept);
 
         // Print salary report
-        a.printSalaries(employees);
+        //a.printSalaries(employees);
 
         // Disconnect from database
         a.disconnect();
